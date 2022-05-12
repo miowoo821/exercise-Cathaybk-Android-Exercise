@@ -1,9 +1,9 @@
 package com.tpower.cathaybk.git_user.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.DefaultItemAnimator
-
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tpower.cathaybk.R
@@ -18,6 +18,7 @@ import com.tpower.cathaybk.global.base.BaseActivity
 
 class GitUserActivity : BaseActivity(), GitUserContract.View  {
     private val mPresenter by lazy { GitUserPresenter() }
+    lateinit var rvGitUserList: RecyclerView
 
     private val linearLayoutManager by lazy {
         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -29,8 +30,6 @@ class GitUserActivity : BaseActivity(), GitUserContract.View  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
-
-
     }
 
     private fun initView(){
@@ -38,18 +37,27 @@ class GitUserActivity : BaseActivity(), GitUserContract.View  {
         mPresenter.attachView(this)
         mPresenter.geGitUser()
     }
-    lateinit var rvGitUserList: RecyclerView
 
     override fun setGitUser(gitUserList: ArrayList<GitUser>) {
         var mGitUserListAdapter: GitUserListAdapter? = null
-        // Adapter
         mGitUserListAdapter = GitUserListAdapter(this, gitUserList, R.layout.item_git_user)
-
+        mGitUserListAdapter.setOnItemClickListener(object : GitUserListAdapter.OnItemClickListener {
+            override fun onItemClick(obj: GitUser, position: Int) {
+                toDetail(obj)
+            }
+        })
         rvGitUserList.adapter = mGitUserListAdapter
         rvGitUserList.layoutManager = linearLayoutManager
         rvGitUserList.itemAnimator = DefaultItemAnimator()
     }
 
+    fun toDetail(obj: GitUser){
+        obj.login
+        val intent = Intent(this,GitUserDetailActivity::class.java)
+        intent.putExtra("name", obj.login);
+        startActivity(intent)
+
+    }
     override fun showError(errorMsg: String, errorCode: Int) {
         Log.d("showError", "showError")
     }

@@ -19,6 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".git_user.view.GitUserDetailActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>

@@ -19,6 +19,15 @@ import com.tpower.cathaybk.git_user.model.bean.GitUser
 class GitUserListAdapter(var mContext: Context, var mData: ArrayList<GitUser>, private var mLayoutId: Int) :
     RecyclerView.Adapter<GitUserListAdapter.ContentViewHolder>() {
 
+    interface OnItemClickListener {
+        fun onItemClick(obj: GitUser, position: Int)
+    }
+    fun setOnItemClickListener(itemClickListener: OnItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
+
+    private var mItemClickListener: OnItemClickListener? = null
+
 
     class ContentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imgUserIcon: ImageView?=null
@@ -44,6 +53,9 @@ class GitUserListAdapter(var mContext: Context, var mData: ArrayList<GitUser>, p
                 .load(mData[position].avatarUrl).transform(CircleCrop())
                 .transition(DrawableTransitionOptions().crossFade())
                 .into(it)
+        }
+        mItemClickListener?.let {
+            holder.itemView.setOnClickListener { mItemClickListener!!.onItemClick(mData[position], position) }
         }
     }
 
